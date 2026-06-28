@@ -519,6 +519,10 @@
             const lastDate = new Date(currentYear, currentMonth + 1, 0).getDate();
             const prevLastDate = new Date(currentYear, currentMonth, 0).getDate();
 
+            // 1. 정렬 우선순위 정의
+            const typePriority = { vacation: 1, overnight: 2, weekend: 3, weekday: 4 };
+
+            // 빈 날짜 처리
             for(let i = firstDayIndex; i > 0; i--) {
                 const dayDiv = document.createElement('div');
                 dayDiv.className = 'text-gray-300 min-h-[85px] p-1 border-t border-gray-100 select-none';
@@ -526,58 +530,96 @@
                 grid.appendChild(dayDiv);
             }
 
+            // 날짜별 렌더링
             for(let date = 1; date <= lastDate; date++) {
                 const dayDiv = document.createElement('div');
-                dayDiv.className = 'min-h-[85px] p-1 border-t border-gray-100 flex flex-col justify-between';
+                dayDiv.className = 'min-h-[85px] p-1 border-t border-gray-100 flex flex-col justify-start';
                 
                 const dateNo = document.createElement('div');
                 dateNo.className = 'font-semibold text-xs text-left mb-1 px-1';
                 dateNo.innerText = date;
-                
                 const currentDayOfWeek = new Date(currentYear, currentMonth, date).getDay();
                 if(currentDayOfWeek === 0) dateNo.classList.add('text-red-500');
                 if(currentDayOfWeek === 6) dateNo.classList.add('text-blue-600');
-                
                 dayDiv.appendChild(dateNo);
 
                 const checkStr = `${currentYear}-${String(currentMonth+1).padStart(2, '0')}-${String(date).padStart(2, '0')}`;
-                let todaysOutings = outData.filter(item => checkStr >= item.start && checkStr <= item.end);
                 
-                const priority = { weekday: 1, weekend: 2, overnight: 3, vacation: 4 };
-                todaysOutings.sort((a, b) => priority[a.type] - priority[b.type]);
+                // 2. 해당 날짜 데이터 가져오기 및 우선순위 정렬
+                let todaysOutings = outData.filter(item => checkStr >= item.start && checkStr <= item.end);
+                todaysOutings.sort((a, b) => {
+                    if (typePriority[a.type] !== typePriority[b.type]) {
+                        return typePriority[a.type] - typePriority[b.type];
+                    }
+                    return new Date(a.start) - new Date(b.start);
+                });
 
-                const barContainer = document.createElement('div');
-                barContainer.className = 'flex-1 flex flex-col gap-1 justify-start pt-1 pb-1';
-
+                // 3. 밑줄 간 간격을 주기 위해 mb-1 추가
                 todaysOutings.forEach(item => {
                     const bar = document.createElement('div');
-                    bar.className = `schedule-bar color-${item.type}`;
+                    bar.className = `schedule-bar color-${item.type} mb-1`; // 여기 mb-1이 간격을 만듭니다
                     
-                    if (item.type === 'weekday' || item.type === 'weekend' || checkStr === item.start || currentDayOfWeek === 0) {
+                    if (checkStr === item.start || currentDayOfWeek === 0) {
                         bar.innerText = item.name;
                     }
 
-                    if (item.start === item.end || item.type === 'weekday' || item.type === 'weekend') {
+                    if (item.start === item.end) {
                         bar.classList.add('bar-single');
                     } else {
-                        if (checkStr === item.start) {
-                            bar.classList.add('bar-start');
-                        } else if (checkStr === item.end) {
-                            bar.classList.add('bar-end');
-                        } else {
-                            if (currentDayOfWeek === 0) bar.classList.add('bar-start');
-                            else if (currentDayOfWeek === 6) bar.classList.add('bar-end');
-                            else bar.classList.add('bar-mid');
-                        }
+                        if (checkStr === item.start) bar.classList.add('bar-start');
+                        else if (checkStr === item.end) bar.classList.add('bar-end');
+                        else bar.classList.add('bar-mid');
                     }
-                    barContainer.appendChild(bar);
+                    dayDiv.appendChild(bar);
                 });
 
-                dayDiv.appendChild(barContainer);
                 grid.appendChild(dayDiv);
             }
         }
+        function createDayCell(date, isCurrentMonth) {
+            const dayDiv = document.createElement('div');
+            dayDiv.className = 'min-h-[85px] p-1 border-t border-gray-100 flex flex-col relative';
+            
+            const dateNo = document.createElement('div');
+            dateNo.className = `font-semibold text-xs mb-1 px-1 ${!isCurrentMonth ? 'text-gray-300' : ''}`;
+            dateNo.innerText = date;
+            dayDiv.appendChild(dateNo);
 
+            if (isCurrentMonth) {
+                const checkStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(date).padStart(2, '0')}`;
+                
+                // 1. 해당 날짜에 포함되는 모든 출타를 가져옴
+                let todaysOutings = outData.filter(item => checkStr >= item.start && checkStr <= item.end);
+                
+                // 2. 정렬 (start 날짜가 빠른 순서대로 정렬하면 줄이 엉키지 않음)
+                todaysOutings.sort((a, b) => new Date(a.start) - new Date(b.start));
+
+                // 3. 4개의 고정 슬롯을 순서대로 채움
+                for (let i = 0; i < 4; i++) {
+                    const row = document.createElement('div');
+                    row.className = 'h-[16px] mb-0.5 w-full';
+                    
+                    const item = todaysOutings[i];
+                    if (item) {
+                        const bar = document.createElement('div');
+                        bar.className = `schedule-bar color-${item.type}`;
+                        
+                        if (checkStr === item.start) {
+                            bar.innerText = item.name;
+                        }
+
+                        if (item.start === item.end) bar.classList.add('bar-single');
+                        else if (checkStr === item.start) bar.classList.add('bar-start');
+                        else if (checkStr === item.end) bar.classList.add('bar-end');
+                        else bar.classList.add('bar-mid');
+                        
+                        row.appendChild(bar);
+                    }
+                    dayDiv.appendChild(row);
+                }
+            }
+            return dayDiv;
+        }
         function renderListTab() {
             autoPurgeExpiredData(); 
             
