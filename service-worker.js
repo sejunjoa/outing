@@ -2,8 +2,10 @@ const CACHE_NAME = "holiday-cache-v1";
 
 const urlsToCache = [
     "./",
-    "./holiday.html",
+    "./index.html",
     "./manifest.json"
+    "./icon-192.png",
+    "./icon-512.png"
 ];
 
 self.addEventListener("install", event => {
