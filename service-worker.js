@@ -1,4 +1,4 @@
-const CACHE_NAME = "holiday-cache-v1";
+const CACHE_NAME = "holiday-cache-v2";
 
 const urlsToCache = [
     "./",
