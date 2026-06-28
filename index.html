@@ -519,11 +519,29 @@
             const lastDate = new Date(currentYear, currentMonth + 1, 0).getDate();
             const prevLastDate = new Date(currentYear, currentMonth, 0).getDate();
 
-            // 1. 정렬 우선순위 정의
-            const typePriority = { vacation: 1, overnight: 2, weekend: 3, weekday: 4 };
+            // 1. 일정별 고정 슬롯 할당 (같은 기간에 겹치는 일정은 다른 슬롯 사용)
+            const slotMap = new Map();
+            const sortedData = [...outData].sort((a, b) => a.start.localeCompare(b.start));
+            
+            sortedData.forEach(item => {
+                const usedSlots = new Set();
+                sortedData.forEach(other => {
+                    if (slotMap.has(other.id) && 
+                        !(item.end < other.start || item.start > other.end)) {
+                        usedSlots.add(slotMap.get(other.id));
+                    }
+                });
+                
+                for (let s = 0; s < 4; s++) {
+                    if (!usedSlots.has(s)) {
+                        slotMap.set(item.id, s);
+                        break;
+                    }
+                }
+            });
 
             // 빈 날짜 처리
-            for(let i = firstDayIndex; i > 0; i--) {
+            for (let i = firstDayIndex; i > 0; i--) {
                 const dayDiv = document.createElement('div');
                 dayDiv.className = 'text-gray-300 min-h-[85px] p-1 border-t border-gray-100 select-none';
                 dayDiv.innerText = prevLastDate - i + 1;
@@ -531,7 +549,7 @@
             }
 
             // 날짜별 렌더링
-            for(let date = 1; date <= lastDate; date++) {
+            for (let date = 1; date <= lastDate; date++) {
                 const dayDiv = document.createElement('div');
                 dayDiv.className = 'min-h-[85px] p-1 border-t border-gray-100 flex flex-col justify-start';
                 
@@ -539,40 +557,36 @@
                 dateNo.className = 'font-semibold text-xs text-left mb-1 px-1';
                 dateNo.innerText = date;
                 const currentDayOfWeek = new Date(currentYear, currentMonth, date).getDay();
-                if(currentDayOfWeek === 0) dateNo.classList.add('text-red-500');
-                if(currentDayOfWeek === 6) dateNo.classList.add('text-blue-600');
+                if (currentDayOfWeek === 0) dateNo.classList.add('text-red-500');
+                if (currentDayOfWeek === 6) dateNo.classList.add('text-blue-600');
                 dayDiv.appendChild(dateNo);
 
                 const checkStr = `${currentYear}-${String(currentMonth+1).padStart(2, '0')}-${String(date).padStart(2, '0')}`;
+                const rows = Array(4).fill(null);
                 
-                // 2. 해당 날짜 데이터 가져오기 및 우선순위 정렬
-                let todaysOutings = outData.filter(item => checkStr >= item.start && checkStr <= item.end);
-                todaysOutings.sort((a, b) => {
-                    if (typePriority[a.type] !== typePriority[b.type]) {
-                        return typePriority[a.type] - typePriority[b.type];
+                outData.forEach(item => {
+                    if (checkStr >= item.start && checkStr <= item.end) {
+                        const sIdx = slotMap.get(item.id) ?? 0;
+                        rows[sIdx] = item;
                     }
-                    return new Date(a.start) - new Date(b.start);
                 });
 
-                // 3. 밑줄 간 간격을 주기 위해 mb-1 추가
-                todaysOutings.forEach(item => {
-                    const bar = document.createElement('div');
-                    bar.className = `schedule-bar color-${item.type} mb-1`; // 여기 mb-1이 간격을 만듭니다
-                    
-                    if (checkStr === item.start || currentDayOfWeek === 0) {
-                        bar.innerText = item.name;
-                    }
-
-                    if (item.start === item.end) {
-                        bar.classList.add('bar-single');
-                    } else {
-                        if (checkStr === item.start) bar.classList.add('bar-start');
+                rows.forEach(item => {
+                    const row = document.createElement('div');
+                    row.className = 'h-[16px] mb-0.5 w-full';
+                    if (item) {
+                        const bar = document.createElement('div');
+                        bar.className = `schedule-bar color-${item.type}`;
+                        if (checkStr === item.start || currentDayOfWeek === 0) bar.innerText = item.name;
+                        
+                        if (item.start === item.end) bar.classList.add('bar-single');
+                        else if (checkStr === item.start) bar.classList.add('bar-start');
                         else if (checkStr === item.end) bar.classList.add('bar-end');
                         else bar.classList.add('bar-mid');
+                        row.appendChild(bar);
                     }
-                    dayDiv.appendChild(bar);
+                    dayDiv.appendChild(row);
                 });
-
                 grid.appendChild(dayDiv);
             }
         }
