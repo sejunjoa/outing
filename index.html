@@ -38,6 +38,12 @@
 </head>
 <body class="bg-gray-50 text-gray-900 font-sans antialiased relative">
 
+    <button
+        id="installButton"
+        class="hidden fixed bottom-5 right-5 bg-emerald-600 text-white px-5 py-3 rounded-full shadow-lg font-bold z-50 active:scale-95 transition-all">
+        📱 앱 설치
+    </button>
+
     <div id="toast-alert" onclick="dismissToast()" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[999] bg-gray-900/95 text-white text-sm font-bold px-6 py-4 rounded-2xl shadow-2xl border border-gray-700 cursor-pointer pointer-events-none opacity-0 invisible transition-all duration-300 max-w-xs text-center backdrop-blur-xs">
         <span id="toast-message">경고 메시지</span>
         <div class="text-[11px] text-gray-400 mt-2 font-normal">(터치 시 즉시 해제)</div>
@@ -672,15 +678,89 @@
     </script>
 
     <script>
+
+    let deferredPrompt = null;
+    const installButton = document.getElementById("installButton");
+    function isStandalone() {
+        return window.matchMedia("(display-mode: standalone)").matches
+            || window.navigator.standalone === true;
+    }
+
+    function isIOS() {
+        return /iphone|ipad|ipod/i.test(navigator.userAgent);
+    }
+    window.addEventListener("beforeinstallprompt", (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        if (!isStandalone()) {
+            installButton.classList.remove("hidden");
+        }
+
+    });
+
+
+    installButton.addEventListener("click", async () => {
+
+        if (isIOS()) {
+
+            alert(
+    `아이폰에서는
+    Safari 하단의 공유, '홈 화면에 추가'
+    를 눌러 설치할 수 있습니다.`
+            );
+            return;
+        }
+        if (!deferredPrompt) return;
+        deferredPrompt.prompt();
+        await deferredPrompt.userChoice;
+        deferredPrompt = null;
+    });
+
+    window.addEventListener("appinstalled", () => {
+        installButton.classList.add("hidden");
+        console.log("앱 설치 완료");
+    });
+    // 처음 실행 시
+    window.addEventListener("load", () => {
+        if (isStandalone()) {
+            installButton.classList.add("hidden");
+        }
+    });
+
+    installButton.addEventListener("click", async () => {
+        if (!deferredPrompt) return;
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === "accepted") {
+            console.log("앱 설치 완료");
+        }
+
+        deferredPrompt = null;
+        installButton.classList.add("hidden");
+    });
+
+    window.addEventListener("appinstalled", () => {
+        console.log("설치 완료");
+        installButton.classList.add("hidden");
+    });
+
+    </script>
+
+    <script>
     if ("serviceWorker" in navigator) {
-        window.addEventListener("load", () => {
-            navigator.serviceWorker.register("./service-worker.js")
-                .then(() => {
-                    console.log("Service Worker 등록 완료");
-                })
-                .catch(err => {
-                    console.error("Service Worker 등록 실패", err);
+        window.addEventListener("load", async () => {
+            const registration = await navigator.serviceWorker.register("./service-worker.js");
+            console.log("Service Worker 등록 완료");
+            registration.addEventListener("updatefound", () => {
+                const newWorker = registration.installing;
+                newWorker.addEventListener("statechange", () => {
+                    if (newWorker.state === "installed" && navigator.serviceWorker.controller) {
+                        if (confirm("새 버전이 있습니다.\n지금 업데이트하시겠습니까?")) {
+                            window.location.reload();
+                        }
+                    }
                 });
+            });
         });
     }
     </script>
