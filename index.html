@@ -508,31 +508,28 @@
         }
 
         function renderCalendar() {
-            autoPurgeExpiredData(); 
+            autoPurgeExpiredData();
             const grid = document.getElementById('calendar-grid');
             const title = document.getElementById('calendar-title');
             grid.innerHTML = '';
-            
             title.innerText = `${currentYear}년 ${String(currentMonth + 1).padStart(2, '0')}월`;
 
             const firstDayIndex = new Date(currentYear, currentMonth, 1).getDay();
             const lastDate = new Date(currentYear, currentMonth + 1, 0).getDate();
             const prevLastDate = new Date(currentYear, currentMonth, 0).getDate();
 
-            // 1. 일정별 고정 슬롯 할당 (같은 기간에 겹치는 일정은 다른 슬롯 사용)
+    // [중요] 일정을 시작일 기준으로 정렬하여 slotMap 생성
+            const sortedData = [...outData].sort((a, b) => new Date(a.start) - new Date(b.start));
             const slotMap = new Map();
-            const sortedData = [...outData].sort((a, b) => a.start.localeCompare(b.start));
-            
+    
             sortedData.forEach(item => {
                 const usedSlots = new Set();
                 sortedData.forEach(other => {
-                    if (slotMap.has(other.id) && 
-                        !(item.end < other.start || item.start > other.end)) {
+                    if (slotMap.has(other.id) && !(item.end < other.start || item.start > other.end)) {
                         usedSlots.add(slotMap.get(other.id));
                     }
                 });
-                
-                for (let s = 0; s < 4; s++) {
+                for (let s = 0; s < 10; s++) { // 슬롯을 10개까지 확보
                     if (!usedSlots.has(s)) {
                         slotMap.set(item.id, s);
                         break;
@@ -540,7 +537,7 @@
                 }
             });
 
-            // 빈 날짜 처리
+    // 빈 날짜 처리
             for (let i = firstDayIndex; i > 0; i--) {
                 const dayDiv = document.createElement('div');
                 dayDiv.className = 'text-gray-300 min-h-[85px] p-1 border-t border-gray-100 select-none';
@@ -548,11 +545,11 @@
                 grid.appendChild(dayDiv);
             }
 
-            // 날짜별 렌더링
+    // 날짜별 렌더링
             for (let date = 1; date <= lastDate; date++) {
                 const dayDiv = document.createElement('div');
-                dayDiv.className = 'min-h-[85px] p-1 border-t border-gray-100 flex flex-col justify-start';
-                
+                dayDiv.className = 'min-h-[85px] h-auto p-1 border-t border-gray-100 flex flex-col justify-start pb-2';
+        
                 const dateNo = document.createElement('div');
                 dateNo.className = 'font-semibold text-xs text-left mb-1 px-1';
                 dateNo.innerText = date;
@@ -562,30 +559,34 @@
                 dayDiv.appendChild(dateNo);
 
                 const checkStr = `${currentYear}-${String(currentMonth+1).padStart(2, '0')}-${String(date).padStart(2, '0')}`;
-                const rows = Array(4).fill(null);
-                
-                outData.forEach(item => {
-                    if (checkStr >= item.start && checkStr <= item.end) {
-                        const sIdx = slotMap.get(item.id) ?? 0;
-                        rows[sIdx] = item;
-                    }
-                });
+        
+                const todaysOutings = outData.filter(item => checkStr >= item.start && checkStr <= item.end)
+                                     .sort((a, b) => (slotMap.get(a.id) ?? 0) - (slotMap.get(b.id) ?? 0));
 
-                rows.forEach(item => {
+                let currentSlot = 0;
+                todaysOutings.forEach(item => {
+                    const itemSlot = slotMap.get(item.id) ?? 0;
+                    while (currentSlot < itemSlot) {
+                        const emptyRow = document.createElement('div');
+                        emptyRow.className = 'h-[16px] mb-0.5 w-full';
+                        dayDiv.appendChild(emptyRow);
+                        currentSlot++;
+                    }
+
                     const row = document.createElement('div');
                     row.className = 'h-[16px] mb-0.5 w-full';
-                    if (item) {
-                        const bar = document.createElement('div');
-                        bar.className = `schedule-bar color-${item.type}`;
-                        if (checkStr === item.start || currentDayOfWeek === 0) bar.innerText = item.name;
-                        
-                        if (item.start === item.end) bar.classList.add('bar-single');
-                        else if (checkStr === item.start) bar.classList.add('bar-start');
-                        else if (checkStr === item.end) bar.classList.add('bar-end');
-                        else bar.classList.add('bar-mid');
-                        row.appendChild(bar);
-                    }
+                    const bar = document.createElement('div');
+                    bar.className = `schedule-bar color-${item.type}`;
+                    if (checkStr === item.start || currentDayOfWeek === 0) bar.innerText = item.name;
+            
+                    if (item.start === item.end) bar.classList.add('bar-single');
+                    else if (checkStr === item.start) bar.classList.add('bar-start');
+                    else if (checkStr === item.end) bar.classList.add('bar-end');
+                    else bar.classList.add('bar-mid');
+            
+                    row.appendChild(bar);
                     dayDiv.appendChild(row);
+                    currentSlot++;
                 });
                 grid.appendChild(dayDiv);
             }
