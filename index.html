@@ -49,68 +49,61 @@
         <div class="text-[11px] text-gray-400 mt-2 font-normal">(터치 시 즉시 해제)</div>
     </div>
 
-    <div id="delete-confirm-modal" class="fixed inset-0 bg-black/40 z-[999] flex items-center justify-center p-4 hidden">
-        <div class="bg-white w-full max-w-xs rounded-2xl p-5 shadow-2xl space-y-4 text-center">
-            <p id="delete-confirm-msg" class="text-sm font-bold text-gray-800 break-all">누구의 출타를 삭제하시겠습니까?</p>
-            <div class="grid grid-cols-2 gap-3 pt-2">
-                <button onclick="closeDeleteModal(false)" class="py-2.5 bg-gray-100 text-gray-600 rounded-xl font-bold text-xs active:scale-95 transition-all">아니오</button>
-                <button onclick="closeDeleteModal(true)" class="py-2.5 bg-red-600 text-white rounded-xl font-bold text-xs active:scale-95 transition-all shadow-xs">예</button>
-            </div>
-        </div>
-    </div>
-
     <div id="page-status" class="max-w-md mx-auto min-h-screen flex flex-col">
-        <header class="bg-white border-b border-gray-200 px-4 py-3 flex items-center sticky top-0 z-10">
-
+        <header class="bg-white border-b border-gray-200 px-4 py-3 flex items-center sticky top-0 z-20">
             <div class="w-24"></div>
-
-            <h2 class="flex-1 text-center text-lg font-bold tracking-tight">
-                출타 관리 시스템
-            </h2>
-
+            <h2 class="flex-1 text-center text-lg font-bold tracking-tight">출타 관리 시스템</h2>
             <div class="w-24 flex justify-end">
-                <button onclick="openModal()"
-                    class="px-3 py-1.5 bg-emerald-600 text-white font-bold rounded-xl text-xs active:scale-95 transition-all shadow-xs">
-                    출타 등록
-                </button>
+                <button onclick="openModal()" class="px-3 py-1.5 bg-emerald-600 text-white font-bold rounded-xl text-xs active:scale-95 transition-all shadow-xs"> 출타 등록 </button>
             </div>
-
         </header>
 
-        <div class="flex items-center justify-between p-3 bg-white border-b border-gray-100 gap-2">
-            <nav class="grid grid-cols-2 gap-1.5 flex-1">
-                <button id="btn-tab-calendar" onclick="switchViewTab('calendar')" class="py-2 rounded-xl font-bold text-xs text-center transition-all bg-blue-600 text-white shadow-xs">달력 보기</button>
-                <button id="btn-tab-list" onclick="switchViewTab('list')" class="py-2 rounded-xl font-bold text-xs text-center transition-all bg-gray-100 text-gray-600">상세 일정</button>
-            </nav>
-            <button id="btn-delete-mode" onclick="toggleDeleteMode()" class="w-1/4 py-2 rounded-xl font-bold text-xs text-center transition-all bg-red-600 text-white shadow-xs active:scale-95">
-                삭제모드
-            </button>
-        </div>
-
-        <main class="p-4 flex-1">
-            <section id="view-calendar" class="block">
-                <div class="flex justify-between items-center mb-4">
-                    <div class="flex items-center space-x-3">
-                        <button onclick="changeMonth(-1)" class="p-2 font-bold text-lg hover:bg-gray-200 rounded-full w-8 h-8 flex items-center justify-center">&lt;</button>
-                        <span id="calendar-title" class="text-lg font-bold text-gray-800">2026년 06월</span>
-                        <button onclick="changeMonth(1)" class="p-2 font-bold text-lg hover:bg-gray-200 rounded-full w-8 h-8 flex items-center justify-center">&gt;</button>
+       <main class="flex-1 overflow-y-auto">
+            <div class="sticky top-0 z-10 bg-white border-b border-gray-100 shadow-xs p-3">
+                <div class="max-w-md mx-auto">
+                    <nav class="grid grid-cols-3 gap-1 w-full mb-3">
+                        <button id="btn-tab-calendar" onclick="switchViewTab('calendar')" class="py-2 rounded-xl font-bold text-xs bg-blue-600 text-white shadow-xs">달력</button>
+                        <button id="btn-tab-list" onclick="switchViewTab('list')" class="py-2 rounded-xl font-bold text-xs bg-gray-100 text-gray-600">상세</button>
+                        <button id="btn-tab-weekly" onclick="switchViewTab('weekly')" class="py-2 rounded-xl font-bold text-xs bg-gray-100 text-gray-600">이번주</button>
+                    </nav>
+            
+                    <input type="text" id="search-input" oninput="filterData()" placeholder="출타자 이름 검색..." 
+                           class="w-full p-2 mb-3 border border-gray-200 rounded-lg text-sm">
+            
+                    <div id="filter-container" class="flex flex-wrap gap-x-2 gap-y-2 text-xs font-bold text-gray-500 px-1">
+                        <button onclick="toggleFilter('weekday', this)" class="filter-btn active flex items-center gap-1 bg-blue-100 text-blue-800 px-2 py-1 rounded-lg transition-all duration-200 border border-blue-200">
+                            <span class="w-2 h-2 rounded-full color-weekday"></span>평일외출
+                        </button>
+                        <button onclick="toggleFilter('weekend', this)" class="filter-btn active flex items-center gap-1 bg-indigo-100 text-indigo-900 px-2 py-1 rounded-lg transition-all duration-200 border border-indigo-200">
+                            <span class="w-2 h-2 rounded-full color-weekend"></span>주말외출
+                        </button>
+                        <button onclick="toggleFilter('overnight', this)" class="filter-btn active flex items-center gap-1 bg-emerald-100 text-emerald-800 px-2 py-1 rounded-lg transition-all duration-200 border border-emerald-200">
+                            <span class="w-2 h-2 rounded-full color-overnight"></span>외박
+                        </button>
+                        <button onclick="toggleFilter('vacation', this)" class="filter-btn active flex items-center gap-1 bg-red-100 text-red-800 px-2 py-1 rounded-lg transition-all duration-200 border border-red-200">
+                            <span class="w-2 h-2 rounded-full color-vacation"></span>휴가
+                        </button>
                     </div>
                 </div>
+            </div>
 
-                <div class="flex flex-wrap gap-x-3 gap-y-1 text-xs font-semibold text-gray-500 mb-3 bg-gray-100 p-2 rounded-lg">
-                    <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full color-weekday"></span>평일외출</span>
-                    <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full color-weekend"></span>주말외출</span>
-                    <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full color-overnight"></span>외박</span>
-                    <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full color-vacation"></span>휴가</span>
-                </div>
-
-                <div class="bg-white rounded-2xl p-3 shadow-xs border border-gray-200 overflow-hidden">
-                    <div class="grid grid-cols-7 text-center text-xs font-bold text-gray-400 mb-2 border-b border-gray-100 pb-2">
-                        <div class="text-red-500">일</div><div>월</div><div>화</div><div>수</div><div>목</div><div>금</div><div class="text-blue-600">토</div>
+            <div class="p-3">
+                <section id="view-calendar">
+                    <div class="flex justify-between items-center px-4 py-2">
+                        <button onclick="changeMonth(-1)" class="w-10 h-10 flex items-center justify-center font-bold text-gray-600 hover:bg-gray-100 rounded-full transition-all">
+                            &lt;
+                        </button>
+        
+                        <div id="calendar-title" class="font-bold text-lg"></div>
+                        
+                        <button onclick="changeMonth(1)" class="w-10 h-10 flex items-center justify-center font-bold text-gray-600 hover:bg-gray-100 rounded-full transition-all">
+                            &gt;
+                        </button>
                     </div>
-                    <div id="calendar-grid" class="grid grid-cols-7 gap-y-2 text-sm"></div>
-                </div>
-            </section>
+                    <div class="bg-white rounded-2xl p-3 shadow-xs border border-gray-200 overflow-hidden">
+                        <div id="calendar-grid" class="grid grid-cols-7 gap-y-2 text-sm"></div>
+                    </div>
+                </section>
 
             <section id="view-list" class="hidden space-y-6">
                 <div>
@@ -128,6 +121,8 @@
                     <div id="integrated-list" class="space-y-2"></div>
                 </div>
             </section>
+            <section id="view-weekly" class="hidden space-y-3">
+                </section>
         </main>
     </div>
 
@@ -197,8 +192,6 @@
         let outData = [];
         let currentYear = 2026;
         let currentMonth = 5; 
-        let isDeleteMode = false; 
-        let selectedIndexToDelete = null;
 
         let toastQueue = [];
         let isToastActive = false;
@@ -268,74 +261,78 @@
             }, 300);
         }
 
-        // 삭제 모드 토글 함수 (삭제모드 작동 시 상세일정 탭으로 자동 이동 설계 포함)
-        function toggleDeleteMode() {
-            const btn = document.getElementById('btn-delete-mode');
-            isDeleteMode = !isDeleteMode;
-
-            if (isDeleteMode) {
-                btn.innerText = "기본모드";
-                btn.className = "w-1/4 py-2 rounded-xl font-bold text-xs text-center transition-all bg-emerald-600 text-white shadow-xs active:scale-95";
-                // 삭제 모드가 켜지면 자동으로 상세 일정 탭으로 화면 전환
-                switchViewTab('list');
-            } else {
-                btn.innerText = "삭제모드";
-                btn.className = "w-1/4 py-2 rounded-xl font-bold text-xs text-center transition-all bg-red-600 text-white shadow-xs active:scale-95";
-                renderListTab(); 
-            }
-        }
-
-        function requestDeleteCard(index, name) {
-            if (!isDeleteMode) return;
-            selectedIndexToDelete = index;
-            document.getElementById('delete-confirm-msg').innerText = `<${name}>의 출타를 삭제하시겠습니까?`;
-            document.getElementById('delete-confirm-modal').classList.remove('hidden');
-        }
-
-        async function closeDeleteModal(confirm) {
-            document.getElementById('delete-confirm-modal').classList.add('hidden');
-            if (confirm && selectedIndexToDelete !== null) {
-                const id=outData[selectedIndexToDelete].id;
-                await sb
-                .from("outing")
-                .delete()
-                .eq("id",id);
-
-                await loadData();
-                triggerToast('해당 출타 기록이 완전히 삭제되었습니다.');
-                autoPurgeExpiredData();
-                renderCalendar();
-                renderListTab();
-            }
-            selectedIndexToDelete = null;
-        }
+        let scrollPos = {viewCalendar: 0, viewList: 0, viewWeekly: 0};
 
         function switchViewTab(viewType) {
+    // 1. 현재 스크롤 위치 저장 (새로운 weekly 탭까지 포함)
+            const currentView = document.querySelector('section:not(.hidden)');
+            if (currentView) {
+                scrollPos[currentView.id] = window.scrollY;
+            }
+
             const btnCalendar = document.getElementById('btn-tab-calendar');
             const btnList = document.getElementById('btn-tab-list');
+            const btnWeekly = document.getElementById('btn-tab-weekly');
+    
             const viewCalendar = document.getElementById('view-calendar');
             const viewList = document.getElementById('view-list');
+            const viewWeekly = document.getElementById('view-weekly'); // 새로 추가할 섹션 ID
 
+    // 버튼 스타일 초기화 및 적용
+            const btns = [btnCalendar, btnList, btnWeekly];
+            btns.forEach(b => b.className = 'py-2 rounded-xl font-bold text-xs bg-gray-100 text-gray-600');
+    
             if(viewType === 'calendar') {
-                // 달력 보기를 누를 때 삭제 모드 상태라면 기본 모드로 강제 원복
-                if(isDeleteMode) {
-                    isDeleteMode = false;
-                    const btn = document.getElementById('btn-delete-mode');
-                    btn.innerText = "삭제모드";
-                    btn.className = "w-1/4 py-2 rounded-xl font-bold text-xs text-center transition-all bg-red-600 text-white shadow-xs active:scale-95";
-                }
-                btnCalendar.className = 'py-2 rounded-xl font-bold text-xs text-center transition-all bg-blue-600 text-white shadow-xs';
-                btnList.className = 'py-2 rounded-xl font-bold text-xs text-center transition-all bg-gray-100 text-gray-600';
-                viewCalendar.classList.remove('hidden'); viewList.classList.add('hidden');
-                autoPurgeExpiredData();
+                btnCalendar.className = 'py-2 rounded-xl font-bold text-xs bg-blue-600 text-white shadow-xs';
+                viewCalendar.classList.remove('hidden'); viewList.classList.add('hidden'); viewWeekly.classList.add('hidden');
+                setTimeout(() => window.scrollTo(0, scrollPos.viewCalendar || 0), 50);
                 renderCalendar();
-            } else {
-                btnCalendar.className = 'py-2 rounded-xl font-bold text-xs text-center transition-all bg-gray-100 text-gray-600';
-                btnList.className = 'py-2 rounded-xl font-bold text-xs text-center transition-all bg-blue-600 text-white shadow-xs';
-                viewCalendar.classList.add('hidden'); viewList.classList.remove('hidden');
-                autoPurgeExpiredData();
+            } else if(viewType === 'list') {
+                btnList.className = 'py-2 rounded-xl font-bold text-xs bg-blue-600 text-white shadow-xs';
+                viewCalendar.classList.add('hidden'); viewList.classList.remove('hidden'); viewWeekly.classList.add('hidden');
+                setTimeout(() => window.scrollTo(0, scrollPos.viewList || 0), 50);
                 renderListTab();
+            } else { // weekly
+                btnWeekly.className = 'py-2 rounded-xl font-bold text-xs bg-blue-600 text-white shadow-xs';
+                viewCalendar.classList.add('hidden'); viewList.classList.add('hidden'); viewWeekly.classList.remove('hidden');
+                setTimeout(() => window.scrollTo(0, scrollPos.viewWeekly || 0), 50);
+                renderWeeklyTab();
             }
+        }
+
+        let searchQuery = "";
+
+        let activeFilters = new Set(['weekday', 'weekend', 'overnight', 'vacation']);
+
+        function toggleFilter(type, btnElement) {
+            const isActive = activeFilters.has(type);
+    
+            if (isActive) {
+                activeFilters.delete(type);
+                btnElement.classList.remove('bg-blue-50', 'text-blue-600'); // 예시 클래스 제거
+                btnElement.style.opacity = '0.4';
+            } else {
+                activeFilters.add(type);
+                btnElement.classList.add('bg-blue-50', 'text-blue-600');
+                btnElement.style.opacity = '1';
+            }
+            filterData();
+        }
+
+        function filterData() {
+            searchQuery = document.getElementById('search-input').value.trim().toLowerCase();
+    
+    // 데이터 정제
+            const filteredData = outData.filter(item => {
+                const matchesName = item.name.toLowerCase().includes(searchQuery);
+                const matchesType = activeFilters.has(item.type);
+                return matchesName && matchesType;
+            });
+
+    // 모든 탭에 정제된 데이터 주입
+            renderCalendar(filteredData);
+            renderListTab(filteredData);
+            renderWeeklyTab(filteredData);
         }
 
         function openModal() { 
@@ -507,21 +504,42 @@
             triggerToast('출타가 등록되었습니다.');
         }
 
-        function renderCalendar() {
+        function renderCalendar(dataFromFilter) {
             autoPurgeExpiredData();
             const grid = document.getElementById('calendar-grid');
             const title = document.getElementById('calendar-title');
             grid.innerHTML = '';
             title.innerText = `${currentYear}년 ${String(currentMonth + 1).padStart(2, '0')}월`;
+    // 1. 요일 헤더 렌더링 (월~일 순서)
+            const daysHeader = ['월', '화', '수', '목', '금', '토', '일'];
+            daysHeader.forEach((day, index) => { // index를 매개변수로 추가
+                const div = document.createElement('div');
+                div.className = 'text-center text-xs font-bold text-gray-400 mb-2';
+    
+    // index를 활용하여 색상 적용
+                if (index === 5) {
+                        div.classList.remove('text-gray-400');
+                        div.classList.add('text-blue-600');
+                    }
+    // 일요일(인덱스 6)은 빨간색 클래스 적용
+                    if (index === 6) {
+                        div.classList.add('text-red-500');
+                    }
+                div.innerText = day;
+                grid.appendChild(div);
+            });
 
-            const firstDayIndex = new Date(currentYear, currentMonth, 1).getDay();
+    // 2. 날짜 계산 (월요일 시작 보정)
+            const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+            const adjustedFirstDay = (firstDay === 0) ? 6 : firstDay - 1; // 일요일(0)을 6으로, 나머지는 -1
             const lastDate = new Date(currentYear, currentMonth + 1, 0).getDate();
             const prevLastDate = new Date(currentYear, currentMonth, 0).getDate();
 
-    // [중요] 일정을 시작일 기준으로 정렬하여 slotMap 생성
-            const sortedData = [...outData].sort((a, b) => new Date(a.start) - new Date(b.start));
+            const filteredData = dataFromFilter || outData;
+
+    // 3. 슬롯 매핑 (겹침 방지)
+            const sortedData = [...(dataFromFilter || outData)].sort((a, b) => new Date(a.start) - new Date(b.start));
             const slotMap = new Map();
-    
             sortedData.forEach(item => {
                 const usedSlots = new Set();
                 sortedData.forEach(other => {
@@ -529,7 +547,7 @@
                         usedSlots.add(slotMap.get(other.id));
                     }
                 });
-                for (let s = 0; s < 10; s++) { // 슬롯을 10개까지 확보
+                for (let s = 0; s < 10; s++) {
                     if (!usedSlots.has(s)) {
                         slotMap.set(item.id, s);
                         break;
@@ -537,15 +555,15 @@
                 }
             });
 
-    // 빈 날짜 처리
-            for (let i = firstDayIndex; i > 0; i--) {
+    // 4. 앞부분 빈 날짜 처리
+            for (let i = adjustedFirstDay; i > 0; i--) {
                 const dayDiv = document.createElement('div');
                 dayDiv.className = 'text-gray-300 min-h-[85px] p-1 border-t border-gray-100 select-none';
                 dayDiv.innerText = prevLastDate - i + 1;
                 grid.appendChild(dayDiv);
             }
 
-    // 날짜별 렌더링
+    // 5. 날짜별 렌더링
             for (let date = 1; date <= lastDate; date++) {
                 const dayDiv = document.createElement('div');
                 dayDiv.className = 'min-h-[85px] h-auto p-1 border-t border-gray-100 flex flex-col justify-start pb-2';
@@ -553,15 +571,18 @@
                 const dateNo = document.createElement('div');
                 dateNo.className = 'font-semibold text-xs text-left mb-1 px-1';
                 dateNo.innerText = date;
+        
+        // 요일 계산 (0:일, 1:월, ... 6:토)
                 const currentDayOfWeek = new Date(currentYear, currentMonth, date).getDay();
-                if (currentDayOfWeek === 0) dateNo.classList.add('text-red-500');
+                if (currentDayOfWeek === 0) dateNo.classList.add('text-red-500'); // 일요일 빨간색
+                if (currentDayOfWeek === 1) dateNo.classList.remove('text-red-500', 'text-blue-600'); // 월요일 기본색
                 if (currentDayOfWeek === 6) dateNo.classList.add('text-blue-600');
                 dayDiv.appendChild(dateNo);
 
-                const checkStr = `${currentYear}-${String(currentMonth+1).padStart(2, '0')}-${String(date).padStart(2, '0')}`;
-        
-                const todaysOutings = outData.filter(item => checkStr >= item.start && checkStr <= item.end)
-                                     .sort((a, b) => (slotMap.get(a.id) ?? 0) - (slotMap.get(b.id) ?? 0));
+                const checkStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(date).padStart(2, '0')}`;
+                const filteredData = dataFromFilter || outData;
+                const todaysOutings = filteredData.filter(item => checkStr >= item.start && checkStr <= item.end)
+                                 .sort((a, b) => (slotMap.get(a.id) ?? 0) - (slotMap.get(b.id) ?? 0));
 
                 let currentSlot = 0;
                 todaysOutings.forEach(item => {
@@ -577,7 +598,9 @@
                     row.className = 'h-[16px] mb-0.5 w-full';
                     const bar = document.createElement('div');
                     bar.className = `schedule-bar color-${item.type}`;
-                    if (checkStr === item.start || currentDayOfWeek === 0) bar.innerText = item.name;
+            
+            // 이름 표시 로직
+                    if (checkStr === item.start || currentDayOfWeek === 1) bar.innerText = item.name;
             
                     if (item.start === item.end) bar.classList.add('bar-single');
                     else if (checkStr === item.start) bar.classList.add('bar-start');
@@ -591,6 +614,7 @@
                 grid.appendChild(dayDiv);
             }
         }
+
         function createDayCell(date, isCurrentMonth) {
             const dayDiv = document.createElement('div');
             dayDiv.className = 'min-h-[85px] p-1 border-t border-gray-100 flex flex-col relative';
@@ -635,20 +659,79 @@
             }
             return dayDiv;
         }
-        function renderListTab() {
+        function getWeeklyRange() {
+            const now = new Date();
+            const day = now.getDay();
+            const diff = now.getDate() - day + (day === 0 ? -6 : 1);
+            const monday = new Date(now.setDate(diff));
+            const sunday = new Date(monday);
+            sunday.setDate(monday.getDate() + 6);
+            return {
+                start: monday.toISOString().split('T')[0],
+                end: sunday.toISOString().split('T')[0]
+            };
+        }
+
+        function renderWeeklyTab(dataFromFilter) {
+            const weeklyRange = getWeeklyRange();
+            const weeklyContainer = document.getElementById('view-weekly');
+            weeklyContainer.innerHTML = '<h3 class="font-bold text-sm mb-3 px-2">이번 주 출타 현황</h3>';
+
+            const typeBgClasses = { weekday:'color-weekday', weekend:'color-weekend', overnight:'color-overnight', vacation:'color-vacation' };
+            const typeNames = { weekday: '평일외출', weekend: '주말외출', overnight: '외박', vacation: '휴가' };
+
+            const filteredData = (dataFromFilter || outData).filter(item => {
+                    const matchesWeek = (item.start >= weeklyRange.start && item.start <= weeklyRange.end);
+                    return matchesWeek; // searchQuery와 activeFilters는 이미 filterData()에서 처리됨
+                });
+
+            if (filteredData.length === 0) {
+                weeklyContainer.innerHTML += '<div class="text-center py-10 text-gray-400 text-sm">이번 주 시작되는 출타가 없습니다.</div>';
+                return;
+            }
+
+            filteredData.forEach(item => {
+               let displayLabel = typeNames[item.type];
+                if (item.type === 'vacation') displayLabel = '휴가출발';
+                else if (item.type === 'overnight') displayLabel = '외박출발';
+
+        // 핵심 수정: 평일/주말 외출은 날짜만, 나머지는 기간 표시
+                const displayPeriod = (item.type === 'weekday' || item.type === 'weekend') 
+                    ? `일시: ${item.start}` 
+                    : `기간: ${item.start} ~ ${item.end}`;
+
+                weeklyContainer.innerHTML += `
+                    <div class="p-4 bg-white rounded-xl shadow-xs flex justify-between items-center text-sm mb-2 mx-3 border border-gray-100">
+                        <div>
+                            <p class="font-bold text-gray-900 text-base">${item.name}</p>
+                            <p class="text-xs text-gray-500 mt-1">${displayPeriod}</p>
+                        </div>
+                        <span class="px-3 py-1 rounded-lg text-xs font-black text-white ${typeBgClasses[item.type]}" style="color: #ffffff !important;">
+                            ${displayLabel}
+                        </span>
+                    </div>`;
+            });
+        }
+
+        function renderListTab(dataFromFilter) {
             autoPurgeExpiredData(); 
-            
+
+    // 필터링된 데이터 사용
+            const filteredData = dataFromFilter || outData;
+
             const todayContainer = document.getElementById('today-list');
             const integratedContainer = document.getElementById('integrated-list');
-            
+
             todayContainer.innerHTML = '';
             integratedContainer.innerHTML = '';
 
             const todayStr = getTodayString();
             const typeBgClasses = { weekday:'color-weekday', weekend:'color-weekend', overnight:'color-overnight', vacation:'color-vacation' };
+            const typeNames = { weekday:'평일외출', weekend:'주말외출', overnight:'외박', vacation:'휴가' };
 
             let todayElementsCount = 0;
-            outData.forEach((item, index) => {
+
+            filteredData.forEach((item) => {
                 let statusLabel = '';
                 if (item.type === 'vacation') {
                     if (item.start === todayStr) statusLabel = '휴가출발';
@@ -664,13 +747,8 @@
 
                 if (statusLabel) {
                     todayElementsCount++;
-                    
-                    const modeStyle = isDeleteMode 
-                        ? 'border-2 border-dashed border-red-500 cursor-pointer bg-red-50/70 hover:bg-red-100/80 transition-all' 
-                        : 'border-2 border-transparent bg-amber-50';
-
                     todayContainer.innerHTML += `
-                        <div onclick="requestDeleteCard(${index}, '${item.name}')" class="${modeStyle} p-3.5 rounded-xl shadow-xs flex justify-between items-center text-sm">
+                        <div class="p-3.5 rounded-xl shadow-xs flex justify-between items-center text-sm bg-amber-50">
                             <div>
                                 <p class="font-bold text-gray-900 text-base">${item.name}</p>
                                 <p class="text-[11px] text-gray-500 mt-0.5">기간: ${item.start} ~ ${item.end}</p>
@@ -686,32 +764,26 @@
                 todayContainer.innerHTML = `<div class="text-center py-4 text-xs text-gray-400 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200">오늘 변동되는 출타자가 없습니다.</div>`;
             }
 
-            if(outData.length === 0) {
-                integratedContainer.innerHTML = `<div class="text-center py-12 text-sm text-gray-400">현재 등록된 출타 이력이 없습니다.</div>`;
-                return;
+            if(filteredData.length === 0) {
+                integratedContainer.innerHTML = `<div class="text-center py-12 text-sm text-gray-400">검색 결과가 없습니다.</div>`;
+            } else {
+                const sortedData = [...filteredData].sort((a, b) => new Date(a.start) - new Date(b.start));
+                sortedData.forEach(item => {
+                    const displayPeriod = (item.type === 'weekday' || item.type === 'weekend') 
+                        ? `일시: ${item.start}` 
+                        : `기간: ${item.start} ~ ${item.end}`;
+                    integratedContainer.innerHTML += `
+                        <div class="p-4 bg-white rounded-xl shadow-xs flex justify-between items-center text-sm mb-2 border border-gray-100">
+                            <div>
+                                <p class="font-bold text-gray-900 text-base">${item.name}</p>
+                                <p class="text-xs text-gray-500 mt-1">${displayPeriod}</p>
+                            </div>
+                            <span class="px-3 py-1 rounded-lg text-xs font-black text-white ${typeBgClasses[item.type]}" style="color: #ffffff !important;">
+                                ${typeNames[item.type]}
+                            </span>
+                        </div>`;
+                });
             }
-
-            const indexedData = outData.map((item, idx) => ({...item, originalIndex: idx}));
-            indexedData.sort((a, b) => new Date(a.start) - new Date(b.start));
-
-            const typeNames = { weekday:'평일외출', weekend:'주말외출', overnight:'외박', vacation:'휴가' };
-
-            indexedData.forEach(item => {
-                const modeStyle = isDeleteMode 
-                    ? 'border-2 border-dashed border-red-500 cursor-pointer bg-red-50/70 hover:bg-red-100/80 transition-all' 
-                    : 'border-2 border-transparent bg-white shadow-xs';
-
-                integratedContainer.innerHTML += `
-                    <div onclick="requestDeleteCard(${item.originalIndex}, '${item.name}')" class="${modeStyle} p-4 rounded-xl flex justify-between items-center text-sm">
-                        <div>
-                            <p class="font-bold text-gray-900 text-base">${item.name}</p>
-                            <p class="text-xs text-gray-500 mt-1">기간: ${item.start} ~ ${item.end}</p>
-                        </div>
-                        <span class="px-3 py-1 rounded-lg text-xs font-black text-white ${typeBgClasses[item.type]}" style="color: #ffffff !important;">
-                            ${typeNames[item.type]}
-                        </span>
-                    </div>`;
-            });
         }
 
         function subscribeRealtime() {
