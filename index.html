@@ -50,26 +50,31 @@
     </div>
 
     <div id="page-status" class="max-w-md mx-auto min-h-screen flex flex-col">
-        <header class="bg-white border-b border-gray-200 px-4 py-3 flex items-center sticky top-0 z-20">
-            <div class="w-24"></div>
-            <h2 class="flex-1 text-center text-lg font-bold tracking-tight">출타 관리 시스템</h2>
-            <div class="w-24 flex justify-end">
-                <button onclick="openModal()" class="px-3 py-1.5 bg-emerald-600 text-white font-bold rounded-xl text-xs active:scale-95 transition-all shadow-xs"> 출타 등록 </button>
-            </div>
-        </header>
+        <div class="sticky top-0 z-20 bg-gray-50 shadow-sm border-b border-gray-200">
+            <header class="bg-white px-4 py-3 flex items-center">
+                <div class="w-24"></div>
+                <h2 class="flex-1 text-center text-lg font-bold tracking-tight">출타 관리 시스템</h2>
+                <div class="w-24 flex justify-end">
+                    <button onclick="openModal()" class="px-3 py-1.5 bg-emerald-600 text-white font-bold rounded-xl text-xs active:scale-95 transition-all shadow-xs"> 출타 등록 </button>
+                </div>
+            </header>
 
-       <main class="flex-1 overflow-y-auto">
-            <div class="sticky top-0 z-10 bg-white border-b border-gray-100 shadow-xs p-3">
+            <div class="bg-white p-3">
                 <div class="max-w-md mx-auto">
-                    <nav class="grid grid-cols-3 gap-1 w-full mb-3">
-                        <button id="btn-tab-calendar" onclick="switchViewTab('calendar')" class="py-2 rounded-xl font-bold text-xs bg-blue-600 text-white shadow-xs">달력</button>
-                        <button id="btn-tab-list" onclick="switchViewTab('list')" class="py-2 rounded-xl font-bold text-xs bg-gray-100 text-gray-600">상세</button>
-                        <button id="btn-tab-weekly" onclick="switchViewTab('weekly')" class="py-2 rounded-xl font-bold text-xs bg-gray-100 text-gray-600">이번주</button>
+                    <nav class="flex gap-2 w-full mb-3">
+                        <div class="flex flex-1 gap-1">
+                            <button id="btn-tab-calendar" onclick="switchViewTab('calendar')" class="py-2 rounded-xl font-bold text-xs bg-blue-600 text-white shadow-xs flex-1">달력</button>
+                            <button id="btn-tab-list" onclick="switchViewTab('list')" class="py-2 rounded-xl font-bold text-xs bg-gray-100 text-gray-600 flex-1">상세</button>
+                        </div>
+                        <div class="flex flex-1 gap-1">
+                            <button id="btn-tab-weekly" onclick="switchViewTab('weekly')" class="py-2 rounded-xl font-bold text-xs bg-gray-100 text-gray-600 flex-1">이번주</button>
+                            <button id="btn-tab-next-weekly" onclick="switchViewTab('next-weekly')" class="py-2 rounded-xl font-bold text-xs bg-gray-100 text-gray-600 flex-1">다음주</button>
+                        </div>
                     </nav>
-            
+
                     <input type="text" id="search-input" oninput="filterData()" placeholder="출타자 이름 검색..." 
                            class="w-full p-2 mb-3 border border-gray-200 rounded-lg text-sm">
-            
+
                     <div id="filter-container" class="flex flex-wrap gap-x-2 gap-y-2 text-xs font-bold text-gray-500 px-1">
                         <button onclick="toggleFilter('weekday', this)" class="filter-btn active flex items-center gap-1 bg-blue-100 text-blue-800 px-2 py-1 rounded-lg transition-all duration-200 border border-blue-200">
                             <span class="w-2 h-2 rounded-full color-weekday"></span>평일외출
@@ -86,43 +91,39 @@
                     </div>
                 </div>
             </div>
+        </div>
 
+        <main class="max-w-md mx-auto w-full flex-1">
             <div class="p-3">
                 <section id="view-calendar">
                     <div class="flex justify-between items-center px-4 py-2">
-                        <button onclick="changeMonth(-1)" class="w-10 h-10 flex items-center justify-center font-bold text-gray-600 hover:bg-gray-100 rounded-full transition-all">
-                            &lt;
-                        </button>
-        
+                        <button onclick="changeMonth(-1)" class="w-10 h-10 flex items-center justify-center font-bold text-gray-600 hover:bg-gray-100 rounded-full transition-all">&lt;</button>
                         <div id="calendar-title" class="font-bold text-lg"></div>
-                        
-                        <button onclick="changeMonth(1)" class="w-10 h-10 flex items-center justify-center font-bold text-gray-600 hover:bg-gray-100 rounded-full transition-all">
-                            &gt;
-                        </button>
+                        <button onclick="changeMonth(1)" class="w-10 h-10 flex items-center justify-center font-bold text-gray-600 hover:bg-gray-100 rounded-full transition-all">&gt;</button>
                     </div>
                     <div class="bg-white rounded-2xl p-3 shadow-xs border border-gray-200 overflow-hidden">
                         <div id="calendar-grid" class="grid grid-cols-7 gap-y-2 text-sm"></div>
                     </div>
                 </section>
 
-            <section id="view-list" class="hidden space-y-6">
-                <div>
-                    <h3 class="font-extrabold text-emerald-700 text-sm mb-2 flex items-center gap-1">
-                        <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                        &lt;오늘의 출타&gt;
-                    </h3>
-                    <div id="today-list" class="space-y-2"></div>
-                </div>
-                
-                <hr class="border-gray-200">
-
-                <div>
-                    <h3 class="font-bold text-gray-700 mb-3 text-sm">전체 출타 정보 명단</h3>
-                    <div id="integrated-list" class="space-y-2"></div>
-                </div>
-            </section>
-            <section id="view-weekly" class="hidden space-y-3">
+                <section id="view-list" class="hidden space-y-6">
+                    <div>
+                        <h3 class="font-extrabold text-emerald-700 text-sm mb-2 flex items-center gap-1">
+                            <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                            &lt;오늘의 출타&gt;
+                        </h3>
+                        <div id="today-list" class="space-y-2"></div>
+                    </div>
+                    <hr class="border-gray-200">
+                    <div>
+                        <h3 class="font-bold text-gray-700 mb-3 text-sm">전체 출타 정보 명단</h3>
+                        <div id="integrated-list" class="space-y-2"></div>
+                    </div>
                 </section>
+            
+                <section id="view-weekly" class="hidden space-y-3"></section>
+                <section id="view-next-weekly" class="hidden space-y-3"></section>
+            </div>
         </main>
     </div>
 
@@ -172,6 +173,7 @@
             </div>
 
             <div class="flex gap-2 pt-2">
+                <button id="btn-delete" onclick="deleteRegistration()" class="hidden flex-1 py-2.5 bg-red-50 text-red-600 rounded-xl font-bold text-sm">삭제</button>
                 <button onclick="closeModal()" class="flex-1 py-2.5 bg-gray-100 text-gray-600 rounded-xl font-bold text-sm">취소</button>
                 <button onclick="submitRegistration()" class="flex-1 py-2.5 bg-emerald-600 text-white rounded-xl font-bold text-sm shadow-xs">등록 완료</button>
             </div>
@@ -225,6 +227,15 @@
             await loadData();
         }
 
+        function getFilteredData() {
+            const searchQuery = document.getElementById('search-input').value.trim().toLowerCase();
+            return outData.filter(item => {
+                const matchesName = item.name.toLowerCase().includes(searchQuery);
+                const matchesType = activeFilters.has(item.type);
+                return matchesName && matchesType;
+            });
+        }
+
         function triggerToast(message) {
             toastQueue.push(message);
             processToastQueue();
@@ -264,39 +275,46 @@
         let scrollPos = {viewCalendar: 0, viewList: 0, viewWeekly: 0};
 
         function switchViewTab(viewType) {
-    // 1. 현재 스크롤 위치 저장 (새로운 weekly 탭까지 포함)
+            // 1. 현재 스크롤 위치 저장
             const currentView = document.querySelector('section:not(.hidden)');
             if (currentView) {
                 scrollPos[currentView.id] = window.scrollY;
             }
 
-            const btnCalendar = document.getElementById('btn-tab-calendar');
-            const btnList = document.getElementById('btn-tab-list');
-            const btnWeekly = document.getElementById('btn-tab-weekly');
-    
-            const viewCalendar = document.getElementById('view-calendar');
-            const viewList = document.getElementById('view-list');
-            const viewWeekly = document.getElementById('view-weekly'); // 새로 추가할 섹션 ID
+            // 2. 모든 버튼의 스타일을 초기화 (flex-1 유지)
+            const btnIds = ['btn-tab-calendar', 'btn-tab-list', 'btn-tab-weekly', 'btn-tab-next-weekly'];
+            btnIds.forEach(id => {
+                const btn = document.getElementById(id);
+                btn.className = 'py-2 rounded-xl font-bold text-xs bg-gray-100 text-gray-600 flex-1';
+            });
+            
+            // 3. 클릭된 탭 버튼 활성화 (flex-1 유지)
+            const activeBtn = document.getElementById(`btn-tab-${viewType === 'next-weekly' ? 'next-weekly' : viewType}`);
+            activeBtn.className = 'py-2 rounded-xl font-bold text-xs bg-blue-600 text-white shadow-xs flex-1';
 
-    // 버튼 스타일 초기화 및 적용
-            const btns = [btnCalendar, btnList, btnWeekly];
-            btns.forEach(b => b.className = 'py-2 rounded-xl font-bold text-xs bg-gray-100 text-gray-600');
-    
+            // 4. 모든 뷰 숨김 처리
+            const views = ['view-calendar', 'view-list', 'view-weekly', 'view-next-weekly'];
+            views.forEach(id => document.getElementById(id).classList.add('hidden'));
+            
+            // 5. 선택된 뷰 표시
+            const targetView = document.getElementById(`view-${viewType}`);
+            targetView.classList.remove('hidden');
+
+            // 6. 데이터 재필터링 및 렌더링
+            const currentData = getFilteredData();
+            
             if(viewType === 'calendar') {
-                btnCalendar.className = 'py-2 rounded-xl font-bold text-xs bg-blue-600 text-white shadow-xs';
-                viewCalendar.classList.remove('hidden'); viewList.classList.add('hidden'); viewWeekly.classList.add('hidden');
                 setTimeout(() => window.scrollTo(0, scrollPos.viewCalendar || 0), 50);
-                renderCalendar();
+                renderCalendar(currentData);
             } else if(viewType === 'list') {
-                btnList.className = 'py-2 rounded-xl font-bold text-xs bg-blue-600 text-white shadow-xs';
-                viewCalendar.classList.add('hidden'); viewList.classList.remove('hidden'); viewWeekly.classList.add('hidden');
                 setTimeout(() => window.scrollTo(0, scrollPos.viewList || 0), 50);
-                renderListTab();
-            } else { // weekly
-                btnWeekly.className = 'py-2 rounded-xl font-bold text-xs bg-blue-600 text-white shadow-xs';
-                viewCalendar.classList.add('hidden'); viewList.classList.add('hidden'); viewWeekly.classList.remove('hidden');
+                renderListTab(currentData);
+            } else if(viewType === 'weekly') {
                 setTimeout(() => window.scrollTo(0, scrollPos.viewWeekly || 0), 50);
-                renderWeeklyTab();
+                renderWeeklyTab(currentData);
+            } else if(viewType === 'next-weekly') {
+                setTimeout(() => window.scrollTo(0, scrollPos.viewNextWeekly || 0), 50);
+                renderNextWeeklyTab(currentData);
             }
         }
 
@@ -320,19 +338,14 @@
         }
 
         function filterData() {
-            searchQuery = document.getElementById('search-input').value.trim().toLowerCase();
-    
-    // 데이터 정제
-            const filteredData = outData.filter(item => {
-                const matchesName = item.name.toLowerCase().includes(searchQuery);
-                const matchesType = activeFilters.has(item.type);
-                return matchesName && matchesType;
-            });
-
-    // 모든 탭에 정제된 데이터 주입
-            renderCalendar(filteredData);
-            renderListTab(filteredData);
-            renderWeeklyTab(filteredData);
+            const filteredData = getFilteredData();
+            
+            // 현재 활성화된 탭을 찾아 렌더링
+            const activeTab = document.querySelector('section:not(.hidden)').id;
+            if (activeTab === 'view-calendar') renderCalendar(filteredData);
+            else if (activeTab === 'view-list') renderListTab(filteredData);
+            else if (activeTab === 'view-weekly') renderWeeklyTab(filteredData);
+            else if (activeTab === 'view-next-weekly') renderNextWeeklyTab(filteredData);
         }
 
         function openModal() { 
@@ -437,11 +450,13 @@
             }
         }
 
-        function changeMonth(direction) {
-            currentMonth += direction;
+        function changeMonth(offset) {
+            currentMonth += offset;
             if (currentMonth > 11) { currentMonth = 0; currentYear++; }
             else if (currentMonth < 0) { currentMonth = 11; currentYear--; }
-            renderCalendar();
+            
+            // 핵심: 달이 바뀔 때 현재 필터링된 데이터를 가져와서 달력을 다시 그립니다.
+            renderCalendar(getFilteredData());
         }
 
         // 초기 구동 자동화 실행문
@@ -504,42 +519,66 @@
             triggerToast('출타가 등록되었습니다.');
         }
 
+        let pressTimer;
+        let currentEditId = null;
+
+        function setupLongPress(element, item) {
+            element.addEventListener('touchstart', () => {
+                pressTimer = setTimeout(() => openEditModal(item), 600);
+            });
+            element.addEventListener('touchend', () => clearTimeout(pressTimer));
+            element.addEventListener('touchmove', () => clearTimeout(pressTimer));
+        }
+
+        function openEditModal(item) {
+            currentEditId = item.id;
+            const modal = document.getElementById('register-modal');
+            modal.querySelector('h3').innerText = '출타 정보 수정';
+            document.getElementById('btn-delete').classList.remove('hidden');
+            
+            document.getElementById('input-name').value = item.name;
+            document.getElementById('input-start-date').value = item.start;
+            document.getElementById('input-end-date').value = item.end;
+            
+            modal.classList.remove('hidden');
+        }
+
+        function deleteRegistration() {
+            if (!confirm('정말 삭제하시겠습니까?')) return;
+            outData = outData.filter(i => i.id !== currentEditId);
+            closeModal();
+            filterData();
+        }
+
+        function closeModal() {
+            document.getElementById('register-modal').classList.add('hidden');
+            document.getElementById('btn-delete').classList.add('hidden');
+            document.querySelector('h3').innerText = '새 출타 등록';
+            currentEditId = null;
+
+        }
         function renderCalendar(dataFromFilter) {
             autoPurgeExpiredData();
             const grid = document.getElementById('calendar-grid');
             const title = document.getElementById('calendar-title');
             grid.innerHTML = '';
             title.innerText = `${currentYear}년 ${String(currentMonth + 1).padStart(2, '0')}월`;
-    // 1. 요일 헤더 렌더링 (월~일 순서)
+
             const daysHeader = ['월', '화', '수', '목', '금', '토', '일'];
-            daysHeader.forEach((day, index) => { // index를 매개변수로 추가
+            daysHeader.forEach((day, index) => {
                 const div = document.createElement('div');
                 div.className = 'text-center text-xs font-bold text-gray-400 mb-2';
-    
-    // index를 활용하여 색상 적용
-                if (index === 5) {
-                        div.classList.remove('text-gray-400');
-                        div.classList.add('text-blue-600');
-                    }
-    // 일요일(인덱스 6)은 빨간색 클래스 적용
-                    if (index === 6) {
-                        div.classList.add('text-red-500');
-                    }
+                if (index === 5) div.className = 'text-center text-xs font-bold text-blue-600 mb-2';
+                if (index === 6) div.className = 'text-center text-xs font-bold text-red-500 mb-2';
                 div.innerText = day;
                 grid.appendChild(div);
             });
 
-    // 2. 날짜 계산 (월요일 시작 보정)
-            const firstDay = new Date(currentYear, currentMonth, 1).getDay();
-            const adjustedFirstDay = (firstDay === 0) ? 6 : firstDay - 1; // 일요일(0)을 6으로, 나머지는 -1
-            const lastDate = new Date(currentYear, currentMonth + 1, 0).getDate();
-            const prevLastDate = new Date(currentYear, currentMonth, 0).getDate();
-
             const filteredData = dataFromFilter || outData;
-
-    // 3. 슬롯 매핑 (겹침 방지)
-            const sortedData = [...(dataFromFilter || outData)].sort((a, b) => new Date(a.start) - new Date(b.start));
+            
+            const sortedData = [...filteredData].sort((a, b) => new Date(a.start) - new Date(b.start));
             const slotMap = new Map();
+            
             sortedData.forEach(item => {
                 const usedSlots = new Set();
                 sortedData.forEach(other => {
@@ -547,7 +586,7 @@
                         usedSlots.add(slotMap.get(other.id));
                     }
                 });
-                for (let s = 0; s < 10; s++) {
+                for (let s = 0; s < 20; s++) {
                     if (!usedSlots.has(s)) {
                         slotMap.set(item.id, s);
                         break;
@@ -555,7 +594,11 @@
                 }
             });
 
-    // 4. 앞부분 빈 날짜 처리
+            const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+            const adjustedFirstDay = (firstDay === 0) ? 6 : firstDay - 1;
+            const lastDate = new Date(currentYear, currentMonth + 1, 0).getDate();
+            const prevLastDate = new Date(currentYear, currentMonth, 0).getDate();
+
             for (let i = adjustedFirstDay; i > 0; i--) {
                 const dayDiv = document.createElement('div');
                 dayDiv.className = 'text-gray-300 min-h-[85px] p-1 border-t border-gray-100 select-none';
@@ -563,30 +606,25 @@
                 grid.appendChild(dayDiv);
             }
 
-    // 5. 날짜별 렌더링
             for (let date = 1; date <= lastDate; date++) {
                 const dayDiv = document.createElement('div');
                 dayDiv.className = 'min-h-[85px] h-auto p-1 border-t border-gray-100 flex flex-col justify-start pb-2';
-        
                 const dateNo = document.createElement('div');
                 dateNo.className = 'font-semibold text-xs text-left mb-1 px-1';
                 dateNo.innerText = date;
-        
-        // 요일 계산 (0:일, 1:월, ... 6:토)
                 const currentDayOfWeek = new Date(currentYear, currentMonth, date).getDay();
-                if (currentDayOfWeek === 0) dateNo.classList.add('text-red-500'); // 일요일 빨간색
-                if (currentDayOfWeek === 1) dateNo.classList.remove('text-red-500', 'text-blue-600'); // 월요일 기본색
+                if (currentDayOfWeek === 0) dateNo.classList.add('text-red-500');
                 if (currentDayOfWeek === 6) dateNo.classList.add('text-blue-600');
                 dayDiv.appendChild(dateNo);
 
                 const checkStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(date).padStart(2, '0')}`;
-                const filteredData = dataFromFilter || outData;
-                const todaysOutings = filteredData.filter(item => checkStr >= item.start && checkStr <= item.end)
-                                 .sort((a, b) => (slotMap.get(a.id) ?? 0) - (slotMap.get(b.id) ?? 0));
+                const todaysOutings = filteredData.filter(item => checkStr >= item.start && checkStr <= item.end);
 
                 let currentSlot = 0;
+                todaysOutings.sort((a, b) => (slotMap.get(a.id) || 0) - (slotMap.get(b.id) || 0));
+
                 todaysOutings.forEach(item => {
-                    const itemSlot = slotMap.get(item.id) ?? 0;
+                    const itemSlot = slotMap.get(item.id) || 0;
                     while (currentSlot < itemSlot) {
                         const emptyRow = document.createElement('div');
                         emptyRow.className = 'h-[16px] mb-0.5 w-full';
@@ -598,9 +636,13 @@
                     row.className = 'h-[16px] mb-0.5 w-full';
                     const bar = document.createElement('div');
                     bar.className = `schedule-bar color-${item.type}`;
+
+                    const isOvernightEnd = (item.type === 'overnight' && checkStr === item.end);
             
-            // 이름 표시 로직
-                    if (checkStr === item.start || currentDayOfWeek === 1) bar.innerText = item.name;
+                    // 수정된 이름 표시 조건: 시작일 또는 종료일인 경우에만 이름 표시
+                    if ((checkStr === item.start || checkStr === item.end) && !isOvernightEnd) {
+                        bar.innerText = item.name;
+                    }
             
                     if (item.start === item.end) bar.classList.add('bar-single');
                     else if (checkStr === item.start) bar.classList.add('bar-start');
@@ -678,12 +720,12 @@
             weeklyContainer.innerHTML = '<h3 class="font-bold text-sm mb-3 px-2">이번 주 출타 현황</h3>';
 
             const typeBgClasses = { weekday:'color-weekday', weekend:'color-weekend', overnight:'color-overnight', vacation:'color-vacation' };
-            const typeNames = { weekday: '평일외출', weekend: '주말외출', overnight: '외박', vacation: '휴가' };
+            const typeNames = { weekday: '평일외출', weekend: '주말외출', overnight: '외박출발', vacation: '휴가출발' };
+            const days = ['일', '월', '화', '수', '목', '금', '토'];
 
             const filteredData = (dataFromFilter || outData).filter(item => {
-                    const matchesWeek = (item.start >= weeklyRange.start && item.start <= weeklyRange.end);
-                    return matchesWeek; // searchQuery와 activeFilters는 이미 filterData()에서 처리됨
-                });
+                return (item.start >= weeklyRange.start && item.start <= weeklyRange.end);
+            });
 
             if (filteredData.length === 0) {
                 weeklyContainer.innerHTML += '<div class="text-center py-10 text-gray-400 text-sm">이번 주 시작되는 출타가 없습니다.</div>';
@@ -691,34 +733,117 @@
             }
 
             filteredData.forEach(item => {
-               let displayLabel = typeNames[item.type];
-                if (item.type === 'vacation') displayLabel = '휴가출발';
-                else if (item.type === 'overnight') displayLabel = '외박출발';
+                const itemDate = new Date(item.start);
+                const dayIndex = itemDate.getDay();
+                
+                let dayColorClass = 'text-gray-900';
+                if (dayIndex === 6) dayColorClass = 'text-blue-700';
+                if (dayIndex === 0) dayColorClass = 'text-red-600';
 
-        // 핵심 수정: 평일/주말 외출은 날짜만, 나머지는 기간 표시
-                const displayPeriod = (item.type === 'weekday' || item.type === 'weekend') 
-                    ? `일시: ${item.start}` 
-                    : `기간: ${item.start} ~ ${item.end}`;
+                const displayLabel = typeNames[item.type];
+                const displayPeriod = `기간: ${item.start} ~ ${item.end}`;
 
-                weeklyContainer.innerHTML += `
-                    <div class="p-4 bg-white rounded-xl shadow-xs flex justify-between items-center text-sm mb-2 mx-3 border border-gray-100">
-                        <div>
-                            <p class="font-bold text-gray-900 text-base">${item.name}</p>
-                            <p class="text-xs text-gray-500 mt-1">${displayPeriod}</p>
-                        </div>
+                // 카드 요소 생성
+                const card = document.createElement('div');
+                card.className = "p-4 bg-white rounded-xl shadow-xs flex justify-between items-center text-sm mb-2 mx-3 border border-gray-100";
+                card.innerHTML = `
+                    <div class="flex-1">
+                        <p class="font-bold text-gray-900 text-base">${item.name}</p>
+                        <p class="text-xs text-gray-500 mt-1">${displayPeriod}</p>
+                    </div>
+                    <div class="w-12 flex justify-center">
+                        <span class="px-2 py-1 bg-gray-200 rounded-lg text-sm font-black ${dayColorClass}">
+                            ${days[dayIndex]}
+                        </span>
+                    </div>
+                    <div class="w-20 flex justify-end">
                         <span class="px-3 py-1 rounded-lg text-xs font-black text-white ${typeBgClasses[item.type]}" style="color: #ffffff !important;">
                             ${displayLabel}
                         </span>
                     </div>`;
+                
+                // 롱프레스 이벤트 연결
+                setupLongPress(card, item);
+                weeklyContainer.appendChild(card);
             });
+        }
+
+        function renderNextWeeklyTab(dataFromFilter) {
+            const nextWeeklyRange = getNextWeeklyRange(); 
+            const nextWeeklyContainer = document.getElementById('view-next-weekly');
+            nextWeeklyContainer.innerHTML = '<h3 class="font-bold text-sm mb-3 px-2">다음 주 출타 현황</h3>';
+
+            const typeBgClasses = { weekday:'color-weekday', weekend:'color-weekend', overnight:'color-overnight', vacation:'color-vacation' };
+            const typeNames = { weekday: '평일외출', weekend: '주말외출', overnight: '외박출발', vacation: '휴가출발' };
+            const days = ['일', '월', '화', '수', '목', '금', '토'];
+
+            const filteredData = (dataFromFilter || outData).filter(item => {
+                return (item.start >= nextWeeklyRange.start && item.start <= nextWeeklyRange.end);
+            });
+
+            if (filteredData.length === 0) {
+                nextWeeklyContainer.innerHTML += '<div class="text-center py-10 text-gray-400 text-sm">다음 주 시작되는 출타가 없습니다.</div>';
+                return;
+            }
+
+            filteredData.forEach(item => {
+                const itemDate = new Date(item.start);
+                const dayIndex = itemDate.getDay();
+                
+                let dayColorClass = 'text-gray-900';
+                if (dayIndex === 6) dayColorClass = 'text-blue-700';
+                if (dayIndex === 0) dayColorClass = 'text-red-600';
+
+                const displayLabel = typeNames[item.type];
+                const displayPeriod = `기간: ${item.start} ~ ${item.end}`;
+
+                // 카드 요소 생성
+                const card = document.createElement('div');
+                card.className = "p-4 bg-white rounded-xl shadow-xs flex justify-between items-center text-sm mb-2 mx-3 border border-gray-100";
+                card.innerHTML = `
+                    <div class="flex-1">
+                        <p class="font-bold text-gray-900 text-base">${item.name}</p>
+                        <p class="text-xs text-gray-500 mt-1">${displayPeriod}</p>
+                    </div>
+                    <div class="w-12 flex justify-center">
+                        <span class="px-2 py-1 bg-gray-200 rounded-lg text-sm font-black ${dayColorClass}">
+                            ${days[dayIndex]}
+                        </span>
+                    </div>
+                    <div class="w-20 flex justify-end">
+                        <span class="px-3 py-1 rounded-lg text-xs font-black text-white ${typeBgClasses[item.type]}" style="color: #ffffff !important;">
+                            ${displayLabel}
+                        </span>
+                    </div>`;
+                
+                // 롱프레스 이벤트 연결
+                setupLongPress(card, item);
+                nextWeeklyContainer.appendChild(card);
+            });
+        }
+
+        // 다음 주 날짜 범위를 계산하는 헬퍼 함수
+        function getNextWeeklyRange() {
+            const now = new Date();
+            const day = now.getDay();
+            const diffToNextMonday = (day === 0 ? 1 : 8 - day); // 다음주 월요일까지의 차이
+            
+            const start = new Date(now);
+            start.setDate(now.getDate() + diffToNextMonday);
+            
+            const end = new Date(start);
+            end.setDate(start.getDate() + 6);
+
+            return {
+                start: start.toISOString().split('T')[0],
+                end: end.toISOString().split('T')[0]
+            };
         }
 
         function renderListTab(dataFromFilter) {
             autoPurgeExpiredData(); 
 
-    // 필터링된 데이터 사용
             const filteredData = dataFromFilter || outData;
-
             const todayContainer = document.getElementById('today-list');
             const integratedContainer = document.getElementById('integrated-list');
 
@@ -747,16 +872,18 @@
 
                 if (statusLabel) {
                     todayElementsCount++;
-                    todayContainer.innerHTML += `
-                        <div class="p-3.5 rounded-xl shadow-xs flex justify-between items-center text-sm bg-amber-50">
-                            <div>
-                                <p class="font-bold text-gray-900 text-base">${item.name}</p>
-                                <p class="text-[11px] text-gray-500 mt-0.5">기간: ${item.start} ~ ${item.end}</p>
-                            </div>
-                            <span class="px-3 py-1 rounded-lg text-xs font-black text-white ${typeBgClasses[item.type]}" style="color: #ffffff !important;">
-                                ${statusLabel}
-                            </span>
-                        </div>`;
+                    const card = document.createElement('div');
+                    card.className = "p-3.5 rounded-xl shadow-xs flex justify-between items-center text-sm bg-amber-50";
+                    card.innerHTML = `
+                        <div>
+                            <p class="font-bold text-gray-900 text-base">${item.name}</p>
+                            <p class="text-[11px] text-gray-500 mt-0.5">기간: ${item.start} ~ ${item.end}</p>
+                        </div>
+                        <span class="px-3 py-1 rounded-lg text-xs font-black text-white ${typeBgClasses[item.type]}" style="color: #ffffff !important;">
+                            ${statusLabel}
+                        </span>`;
+                    setupLongPress(card, item);
+                    todayContainer.appendChild(card);
                 }
             });
 
@@ -772,16 +899,19 @@
                     const displayPeriod = (item.type === 'weekday' || item.type === 'weekend') 
                         ? `일시: ${item.start}` 
                         : `기간: ${item.start} ~ ${item.end}`;
-                    integratedContainer.innerHTML += `
-                        <div class="p-4 bg-white rounded-xl shadow-xs flex justify-between items-center text-sm mb-2 border border-gray-100">
-                            <div>
-                                <p class="font-bold text-gray-900 text-base">${item.name}</p>
-                                <p class="text-xs text-gray-500 mt-1">${displayPeriod}</p>
-                            </div>
-                            <span class="px-3 py-1 rounded-lg text-xs font-black text-white ${typeBgClasses[item.type]}" style="color: #ffffff !important;">
-                                ${typeNames[item.type]}
-                            </span>
-                        </div>`;
+                    
+                    const card = document.createElement('div');
+                    card.className = "p-4 bg-white rounded-xl shadow-xs flex justify-between items-center text-sm mb-2 border border-gray-100";
+                    card.innerHTML = `
+                        <div>
+                            <p class="font-bold text-gray-900 text-base">${item.name}</p>
+                            <p class="text-xs text-gray-500 mt-1">${displayPeriod}</p>
+                        </div>
+                        <span class="px-3 py-1 rounded-lg text-xs font-black text-white ${typeBgClasses[item.type]}" style="color: #ffffff !important;">
+                            ${typeNames[item.type]}
+                        </span>`;
+                    setupLongPress(card, item);
+                    integratedContainer.appendChild(card);
                 });
             }
         }
